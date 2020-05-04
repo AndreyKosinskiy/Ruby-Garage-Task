@@ -16,7 +16,7 @@ class Task(models.Model):
     board = models.ForeignKey(Project, related_name="tasks", on_delete=models.CASCADE)
     is_done = models.BooleanField(default=False)
     priority = models.SmallIntegerField(default=1)
-    expiry_date = models.DateTimeField(verbose_name="deadline", null = True)
+    expiry_date = models.DateTimeField(verbose_name="deadline", null=True)
 
     def __str__(self):
         return self.text

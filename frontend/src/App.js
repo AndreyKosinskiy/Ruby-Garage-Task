@@ -33,40 +33,38 @@ const ProjectContext = React.createContext([[], () => {
 }]);
 
 const reorder = (list, startIndex, endIndex) => {
-  let result = Array.from(list);
-  if (startIndex > endIndex){
-      result = result.map(task =>{
-          if(task.priority >= endIndex && task.priority <= startIndex) {
-              task.priority = task.priority == startIndex ? endIndex : task.priority + 1
-              let request = axios.patch(`http://127.0.0.1:8000/api/v1/task/${task.id}/`,task)
-                  .then(response => response.data)
-                  .then(data=>{
-                      return data
-                  })
-              //return task
-          }
-          return task
-      })
-  }
-  if(startIndex < endIndex){
-      result = result.map(task =>{
-      if (task.priority>=startIndex && task.priority<=endIndex){
-          task.priority = task.priority == startIndex? task.priority = endIndex :task.priority - 1
-          let request = axios.patch(`http://127.0.0.1:8000/api/v1/task/${task.id}/`,task)
-                  .then(response => response.data)
-                  .then(data=>{
-                      return data
-                  })
-          //return task
-      }
-      return task
-  })}
-  result = result.sort((a,b) => (a.priority > b.priority) ? 1 : ((b.priority > a.priority) ? -1 : 0))
-  return result;
+    let result = Array.from(list);
+    if (startIndex > endIndex) {
+        result = result.map(task => {
+            if (task.priority >= endIndex && task.priority <= startIndex) {
+                task.priority = task.priority == startIndex ? endIndex : task.priority + 1
+                let request = axios.patch(`http://127.0.0.1:8000/api/v1/task/${task.id}/`, task)
+                    .then(response => response.data)
+                    .then(data => {
+                        return data
+                    })
+                //return task
+            }
+            return task
+        })
+    }
+    if (startIndex < endIndex) {
+        result = result.map(task => {
+            if (task.priority >= startIndex && task.priority <= endIndex) {
+                task.priority = task.priority == startIndex ? task.priority = endIndex : task.priority - 1
+                let request = axios.patch(`http://127.0.0.1:8000/api/v1/task/${task.id}/`, task)
+                    .then(response => response.data)
+                    .then(data => {
+                        return data
+                    })
+                //return task
+            }
+            return task
+        })
+    }
+    result = result.sort((a, b) => (a.priority > b.priority) ? 1 : ((b.priority > a.priority) ? -1 : 0))
+    return result;
 };
-
-
-
 
 
 function App() {
@@ -74,13 +72,13 @@ function App() {
 
     const [stateProjectList, dispatchProjectList] = React.useReducer(reducer, []);
     const [edit, setEdit] = React.useState('');
-    React.useEffect( () => {
+    React.useEffect(() => {
         const fetchData = async () => {
             const result = await axios('http://127.0.0.1:8000/api/v1/project/');
-            dispatchProjectList({type:'update_project_by_id',payload:{'value': result.data}});
+            dispatchProjectList({type: 'update_project_by_id', payload: {'value': result.data}});
         }
         fetchData();
-  },[]);
+    }, []);
 
     const onDragEnd = (result) => {
 // dropped outside the list
@@ -93,35 +91,35 @@ function App() {
         let taskList = stateProjectList.filter(x => x.id == project_id)[0].tasks
 
         const reorderedTaskList = reorder(
-          taskList,
-          result.source.index,
-          result.destination.index
+            taskList,
+            result.source.index,
+            result.destination.index
         );
 
 
-        let newState = stateProjectList.map(project=>{
-            if (project.id == project_id)project.tasks = reorderedTaskList
+        let newState = stateProjectList.map(project => {
+            if (project.id == project_id) project.tasks = reorderedTaskList
             return project
         })
-        dispatchProjectList({type:'update_project_by_id',payload:{'value': newState}})
+        dispatchProjectList({type: 'update_project_by_id', payload: {'value': newState}})
     }
     return (
-    <>
-    {stateProjectList &&
-        <div className="App">
-            <CssBaseline/>
-            <Container maxWidth="sm">
-                <ProjectContext.Provider value={[stateProjectList, dispatchProjectList,edit, setEdit]}>
-                    <Menu></Menu>
-                    <DragDropContext onDragEnd={onDragEnd}>
-                        <ProjectLayout></ProjectLayout>
-                    </DragDropContext>
+        <>
+            {stateProjectList &&
+            <div className="App">
+                <CssBaseline/>
+                <Container maxWidth="sm">
+                    <ProjectContext.Provider value={[stateProjectList, dispatchProjectList, edit, setEdit]}>
+                        <Menu></Menu>
+                        <DragDropContext onDragEnd={onDragEnd}>
+                            <ProjectLayout></ProjectLayout>
+                        </DragDropContext>
 
-                </ProjectContext.Provider>
-            </Container>
-        </div>
-    }
-    </>
+                    </ProjectContext.Provider>
+                </Container>
+            </div>
+            }
+        </>
     );
 }
 

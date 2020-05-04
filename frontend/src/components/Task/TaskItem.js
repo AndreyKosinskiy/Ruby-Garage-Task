@@ -43,7 +43,7 @@ export default function TaskItem({taskItem, index}) {
 
 
     const [task, setTask] = React.useState(taskItem);
-    const [stateProjectList, dispatchProjectList,edit, setEdit] = React.useContext(ProjectContext);
+    const [stateProjectList, dispatchProjectList, edit, setEdit] = React.useContext(ProjectContext);
     const [editTask, setEditTask] = React.useState(false);
     const [prevText, setPrevText] = React.useState('');
     const classes = useStyles();
@@ -65,26 +65,26 @@ export default function TaskItem({taskItem, index}) {
 
     const handleClickConfirm = event => {
         if (event.key == 'Enter' || event == 'click') {
-              //setEditTask(!editTask);
+            //setEditTask(!editTask);
             setEdit('')
             if (task.text.trim().length !== 0) {
-                if (prevText != task.text){
-                                    let request = axios.patch(`http://127.0.0.1:8000/api/v1/task/${task.id}/`, task)
-                .then(response => response.data)
-                .then(data => {
-                    const newState = stateProjectList.map(project => {
-                        project.tasks = project.tasks.map(taskItemRoot => {
-                            return taskItemRoot.id == task.id ? data : taskItemRoot
+                if (prevText != task.text) {
+                    let request = axios.patch(`http://127.0.0.1:8000/api/v1/task/${task.id}/`, task)
+                        .then(response => response.data)
+                        .then(data => {
+                            const newState = stateProjectList.map(project => {
+                                project.tasks = project.tasks.map(taskItemRoot => {
+                                    return taskItemRoot.id == task.id ? data : taskItemRoot
+                                })
+                                return project
+                            })
+                            dispatchProjectList({type: 'update_task', payload: {'value': newState}})
                         })
-                        return project
-                    })
-                    dispatchProjectList({type: 'update_task', payload: {'value': newState}})
-                })
-                }else{
-                    setTask({...task,'text':prevText})
+                } else {
+                    setTask({...task, 'text': prevText})
                 }
-            }else{
-                setTask({...task,'text':prevText})
+            } else {
+                setTask({...task, 'text': prevText})
             }
 
         }
@@ -142,7 +142,8 @@ export default function TaskItem({taskItem, index}) {
                             }}
                         />
                     </ListItemIcon>
-                    <ListItemText id={labelId} primary={task.text} style={{'display': is_editTask(!(edit == task.id))}}/>
+                    <ListItemText id={labelId} primary={task.text}
+                                  style={{'display': is_editTask(!(edit == task.id))}}/>
                     <ListItemText id={labelId} primary={new Date(task.expiry_date).toLocaleDateString('ru')}
                                   style={{'display': is_editTask(!(edit == task.id))}} align='right'/>
                     <TextField
@@ -150,7 +151,7 @@ export default function TaskItem({taskItem, index}) {
                         id="outlined-basic" variant="outlined"
                         style={{'display': is_editTask(edit == task.id)}}
                         value={task.text}
-                        error ={task.text.length === 0 ? true : false }
+                        error={task.text.length === 0 ? true : false}
                         onChange={event => setTask({...task, 'text': event.target.value})}
                         onKeyPress={(event) => handleClickConfirm(event)}
                     />
@@ -162,7 +163,10 @@ export default function TaskItem({taskItem, index}) {
                             format="dd/MM/yyyy"
                             margin="normal"
                             value={new Date(task.expiry_date)}
-                            onChange={(date) => date instanceof Date && !isNaN(date.valueOf()) ? setTask({...task, 'expiry_date': date.toISOString()}) : null}
+                            onChange={(date) => date instanceof Date && !isNaN(date.valueOf()) ? setTask({
+                                ...task,
+                                'expiry_date': date.toISOString()
+                            }) : null}
                             id="date-picker-inline"
                             label="deadline"
                             KeyboardButtonProps={{
@@ -180,7 +184,8 @@ export default function TaskItem({taskItem, index}) {
                     </IconButton>
                     <IconButton className={classes.menuButton} color="inherit" aria-label="menu"
                                 style={{'display': is_editTask(edit == task.id)}}
-                                edge="end" onClick={() => handleClickConfirm('click')} disabled={task.text.trim().length === 0}>
+                                edge="end" onClick={() => handleClickConfirm('click')}
+                                disabled={task.text.trim().length === 0}>
                         <CheckIcon/>
                     </IconButton>
                     <IconButton className={classes.menuButton} color="inherit" aria-label="menu"

@@ -44,24 +44,24 @@ export default function Menu({id_proj}) {
                 "expiry_date": deadlinedefault.toISOString(),
                 "project_id": id_proj
             }
-            let request = axios.post('http://127.0.0.1:8000/api/v1/task/',newTask)
-                .then((response)=> response.data )
+            let request = axios.post('http://127.0.0.1:8000/api/v1/task/', newTask)
+                .then((response) => response.data)
                 .then(data => {
 
 
-                                const newState = stateProjectList.map(project => {
-                if (project.id == id_proj) {
-                    if (project.tasks){
-                        project.tasks.push(data);
-                    }else{
-                        project.tasks = []
-                     project.tasks.push(data);
-                    }
-                }
-                return project
-            })
-            dispatchProjectList({type: 'create_task', payload: {'value': newState}})
-            setTaskName("")
+                    const newState = stateProjectList.map(project => {
+                        if (project.id == id_proj) {
+                            if (project.tasks) {
+                                project.tasks.push(data);
+                            } else {
+                                project.tasks = []
+                                project.tasks.push(data);
+                            }
+                        }
+                        return project
+                    })
+                    dispatchProjectList({type: 'create_task', payload: {'value': newState}})
+                    setTaskName("")
                 })
 
         }
@@ -81,7 +81,8 @@ export default function Menu({id_proj}) {
                         placeholder="Input Title for new task"
                     />
                     <IconButton className={classes.menuButton} color="inherit" aria-label="menu"
-                                edge="end" align='right' onClick={() => handleClickConfirm('click')} disabled={taskName.trim().length === 0}>
+                                edge="end" align='right' onClick={() => handleClickConfirm('click')}
+                                disabled={taskName.trim().length === 0}>
                         <AddIcon/>
                     </IconButton>
                 </Toolbar>

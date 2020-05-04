@@ -48,7 +48,7 @@ export default function ProjectMenu({name, id}) {
         if (event.key == 'Enter' || event == 'click') {
             setEditProjectName(!editProjectName);
 
-            let request = axios.patch(`http://127.0.0.1:8000/api/v1/project/${id}/`, {"name":projectName})
+            let request = axios.patch(`http://127.0.0.1:8000/api/v1/project/${id}/`, {"name": projectName})
                 .then(response => response.data)
                 .then(data => {
                     const newState = stateProjectList.map(project => {
@@ -86,7 +86,7 @@ export default function ProjectMenu({name, id}) {
                         style={{'display': is_editProjectName(editProjectName)}}
                         value={projectName}
                         onChange={event => setProjectName(event.target.value)}
-                        onKeyPress={(event) =>handleClickConfirm(event)}
+                        onKeyPress={(event) => handleClickConfirm(event)}
                     />
                     <IconButton className={classes.menuButton} color="inherit" aria-label="menu"
                                 style={{'display': is_editProjectName(!editProjectName)}}

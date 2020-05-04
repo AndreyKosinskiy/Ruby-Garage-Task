@@ -3,14 +3,15 @@ from .models import Project, Task
 
 
 class TaskSerializer(serializers.ModelSerializer):
-    """ Задание """
+    """ TASKS """
+
     class Meta:
         model = Task
         fields = ['id', 'text', 'is_done', 'priority', 'expiry_date']
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    """ Проект """
+    """ PROJECT """
     tasks = TaskSerializer(many=True, required=False)
 
     class Meta:
