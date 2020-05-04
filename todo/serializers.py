@@ -9,7 +9,6 @@ class TaskSerializer(serializers.ModelSerializer):
         model = Task
         fields = ['id', 'text', 'is_done', 'priority', 'expiry_date']
 
-
 class ProjectSerializer(serializers.ModelSerializer):
     """ PROJECT """
     tasks = TaskSerializer(many=True, required=False)

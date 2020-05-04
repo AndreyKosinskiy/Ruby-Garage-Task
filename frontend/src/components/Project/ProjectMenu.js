@@ -85,6 +85,7 @@ export default function ProjectMenu({name, id}) {
                         id="outlined-basic" variant="outlined"
                         style={{'display': is_editProjectName(editProjectName)}}
                         value={projectName}
+                        error={projectName.length === 0 ? true : false}
                         onChange={event => setProjectName(event.target.value)}
                         onKeyPress={(event) => handleClickConfirm(event)}
                     />
@@ -95,7 +96,8 @@ export default function ProjectMenu({name, id}) {
                     </IconButton>
                     <IconButton className={classes.menuButton} color="inherit" aria-label="menu"
                                 style={{'display': is_editProjectName(editProjectName)}}
-                                edge="end" onClick={() => handleClickConfirm('click')} align='right'>
+                                edge="end" onClick={() => handleClickConfirm('click')} align='right'
+                                disabled={projectName.trim().length === 0}>
                         <CheckIcon/>
                     </IconButton>
                     <IconButton className={classes.menuButton} color="inherit" aria-label="menu"

@@ -1,22 +1,17 @@
 import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
-import CommentIcon from '@material-ui/icons/Comment';
 import {ProjectContext} from "../../App";
 import TextField from "@material-ui/core/TextField";
 import EditIcon from "@material-ui/icons/Edit";
 import CheckIcon from "@material-ui/icons/Check";
 import DeleteIcon from "@material-ui/icons/Delete";
-import Toolbar from "@material-ui/core/Toolbar";
 import {KeyboardDatePicker, MuiPickersUtilsProvider} from '@material-ui/pickers';
 import DateFnsUtils from "@date-io/date-fns";
-import MomentUtils from '@date-io/moment';
 import {green} from '@material-ui/core/colors';
 import {Draggable} from "react-beautiful-dnd";
 import axios from "axios";
@@ -46,6 +41,7 @@ export default function TaskItem({taskItem, index}) {
     const [stateProjectList, dispatchProjectList, edit, setEdit] = React.useContext(ProjectContext);
     const [editTask, setEditTask] = React.useState(false);
     const [prevText, setPrevText] = React.useState('');
+    const [prevDate, setPrevDate] = React.useState('');
     const classes = useStyles();
 
 
@@ -59,6 +55,7 @@ export default function TaskItem({taskItem, index}) {
 
     function handleClickEdit(e) {
         setEdit(task.id)
+        setPrevDate(task.expiry_date)
         setPrevText(task.text)
         //setEditTask(!editTask);
     }
@@ -66,9 +63,10 @@ export default function TaskItem({taskItem, index}) {
     const handleClickConfirm = event => {
         if (event.key == 'Enter' || event == 'click') {
             //setEditTask(!editTask);
+                        console.log(task.expiry_date)
             setEdit('')
             if (task.text.trim().length !== 0) {
-                if (prevText != task.text) {
+                if (prevText != task.text || prevDate != task.expiry_date) {
                     let request = axios.patch(`http://127.0.0.1:8000/api/v1/task/${task.id}/`, task)
                         .then(response => response.data)
                         .then(data => {

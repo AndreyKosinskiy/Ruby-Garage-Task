@@ -21,6 +21,7 @@ class TaskView(viewsets.ModelViewSet):
     queryset = Task.objects
     serializer_class = TaskSerializer
 
+
     def create(self, request):
         serializer = self.serializer_class(data=request.data)
         project_id = request.data['project_id']
@@ -38,7 +39,7 @@ class TaskView(viewsets.ModelViewSet):
                 priority=new_priority,
                 expiry_date=serializer.validated_data['expiry_date'],
             )
-            serializer.validated_data
+            # serializer.validated_data
             return Response(
                 TaskSerializer(task_response).data, status=status.HTTP_201_CREATED
             )
