@@ -1,0 +1,83 @@
+[
+    {
+        "id": 1,
+        "name": "PHP",
+        "tasks": [
+            {
+                "id": 1,
+                "text": "Class",
+                "is_done": false,
+                "priority": 1,
+                "expiry_date": "2020-04-23T22:47:32Z"
+            },
+            {
+                "id": 2,
+                "text": "Interface",
+                "is_done": false,
+                "priority": 2,
+                "expiry_date": "2020-04-23T22:48:03Z"
+            },
+            {
+                "id": 3,
+                "text": "Triet",
+                "is_done": false,
+                "priority": 3,
+                "expiry_date": "2020-04-23T22:48:17Z"
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "name": "Django",
+        "tasks": [
+            {
+                "id": 4,
+                "text": "DRF",
+                "is_done": false,
+                "priority": 1,
+                "expiry_date": "2020-04-23T22:48:25Z"
+            },
+            {
+                "id": 5,
+                "text": "Redis",
+                "is_done": false,
+                "priority": 2,
+                "expiry_date": "2020-04-23T22:48:36Z"
+            },
+            {
+                "id": 6,
+                "text": "django-filter",
+                "is_done": false,
+                "priority": 3,
+                "expiry_date": "2020-04-23T22:48:51Z"
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "name": "Ruby",
+        "tasks": [
+            {
+                "id": 7,
+                "text": "Hello world",
+                "is_done": false,
+                "priority": 1,
+                "expiry_date": "2020-04-23T22:49:03Z"
+            },
+            {
+                "id": 8,
+                "text": "Data Types",
+                "is_done": false,
+                "priority": 2,
+                "expiry_date": "2020-04-23T22:49:17Z"
+            },
+            {
+                "id": 9,
+                "text": "Functions",
+                "is_done": false,
+                "priority": 3,
+                "expiry_date": "2020-04-23T22:49:27Z"
+            }
+        ]
+    }
+]
