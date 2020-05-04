@@ -34,14 +34,15 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function TaskItem({taskItem, index}) {
+export default function TaskItem({taskItem, index,id_project,position,indexTask}) {
 
 
     const [task, setTask] = React.useState(taskItem);
     const [stateProjectList, dispatchProjectList, edit, setEdit] = React.useContext(ProjectContext);
-    const [editTask, setEditTask] = React.useState(false);
+    // const [editTask, setEditTask] = React.useState(false);
     const [prevText, setPrevText] = React.useState('');
     const [prevDate, setPrevDate] = React.useState('');
+
     const classes = useStyles();
 
 
@@ -54,30 +55,31 @@ export default function TaskItem({taskItem, index}) {
     }
 
     function handleClickEdit(e) {
+        console.log(stateProjectList)
+        const id = task.id
         setEdit(task.id)
         setPrevDate(task.expiry_date)
         setPrevText(task.text)
-        //setEditTask(!editTask);
     }
 
     const handleClickConfirm = event => {
-        if (event.key == 'Enter' || event == 'click') {
-            //setEditTask(!editTask);
-                        console.log(task.expiry_date)
+        if (event.key === 'Enter' || event === 'click') {
             setEdit('')
             if (task.text.trim().length !== 0) {
-                if (prevText != task.text || prevDate != task.expiry_date) {
-                    let request = axios.patch(`http://127.0.0.1:8000/api/v1/task/${task.id}/`, task)
+                if (prevText !== task.text || prevDate !== task.expiry_date) {
+                    axios.patch(`http://127.0.0.1:8000/api/v1/task/${task.id}/`, task)
                         .then(response => response.data)
                         .then(data => {
                             const newState = stateProjectList.map(project => {
                                 project.tasks = project.tasks.map(taskItemRoot => {
-                                    return taskItemRoot.id == task.id ? data : taskItemRoot
+                                    return taskItemRoot.id === task.id ? data : taskItemRoot
                                 })
                                 return project
                             })
                             dispatchProjectList({type: 'update_task', payload: {'value': newState}})
                         })
+                    setPrevDate('')
+                    setPrevText('')
                 } else {
                     setTask({...task, 'text': prevText})
                 }
@@ -89,29 +91,29 @@ export default function TaskItem({taskItem, index}) {
     }
 
     const handleClickRemove = () => {
-        let request = axios.delete(`http://127.0.0.1:8000/api/v1/task/${task.id}/`)
+        axios.delete(`http://127.0.0.1:8000/api/v1/task/${task.id}/`)
             .then(response => response.data)
             .then(data => {
                 const newState = stateProjectList.map(project => {
-                    project.tasks = project.tasks.filter(taskItemRoot => taskItemRoot.id != task.id)
+                    project.tasks = project.tasks.filter(taskItemRoot => taskItemRoot.id !== task.id)
                     return project
                 })
                 dispatchProjectList({type: 'remove_task', payload: {'value': newState}})
             }).catch(reason => {
-                console.error(`handleClickRemove:: Task %{task.text} do not removed.`)
-            })
+            console.error(`handleClickRemove:: Task %{task.text} do not removed.`)
+        })
 
 
     }
 
     const handleToggle = (event) => {
-        let request = axios.patch(`http://127.0.0.1:8000/api/v1/task/${task.id}/`, {"is_done": event.target.checked})
+        axios.patch(`http://127.0.0.1:8000/api/v1/task/${task.id}/`, {"is_done": event.target.checked})
             .then(response => response.data)
             .then(data => {
                 setTask(data);
                 const newState = stateProjectList.map(project => {
                     project.tasks = project.tasks.map(taskItemRoot => {
-                        return taskItemRoot.id == task.id ? data : taskItemRoot
+                        return taskItemRoot.id === task.id ? data : taskItemRoot
                     })
                     return project
                 })
@@ -119,13 +121,12 @@ export default function TaskItem({taskItem, index}) {
             })
     };
     const labelId = `checkbox-list-label-${task.id}`;
-
     return (
         <Draggable draggableId={task.id + ''} key={task.id} index={index}>
             {(provided) => (
                 <ListItem key={task.id} role={undefined} dense
-                          button {...provided.draggableProps} {...provided.dragHandleProps}
-                          innerRef={provided.innerRef}>
+                          button {...provided.draggableProps} {...provided.dragHandleProps} innerRef={provided.innerRef}
+                >
                     <ListItemIcon>
                         <Checkbox
                             color="default"
@@ -141,13 +142,13 @@ export default function TaskItem({taskItem, index}) {
                         />
                     </ListItemIcon>
                     <ListItemText id={labelId} primary={task.text}
-                                  style={{'display': is_editTask(!(edit == task.id))}}/>
+                                  style={{'display': is_editTask(!(edit === task.id))}}/>
                     <ListItemText id={labelId} primary={new Date(task.expiry_date).toLocaleDateString('ru')}
-                                  style={{'display': is_editTask(!(edit == task.id))}} align='right'/>
+                                  style={{'display': is_editTask(!(edit === task.id))}} align='right'/>
                     <TextField
                         className={classes.title}
-                        id="outlined-basic" variant="outlined"
-                        style={{'display': is_editTask(edit == task.id)}}
+                        id="outlined-basic-1" variant="outlined"
+                        style={{'display': is_editTask(edit === task.id)}}
                         value={task.text}
                         error={task.text.length === 0 ? true : false}
                         onChange={event => setTask({...task, 'text': event.target.value})}
@@ -155,8 +156,8 @@ export default function TaskItem({taskItem, index}) {
                     />
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <KeyboardDatePicker
-                            innerRef={provided.innerRef}
                             disableToolbar
+                            autoOk
                             variant="inline"
                             format="dd/MM/yyyy"
                             margin="normal"
@@ -165,23 +166,21 @@ export default function TaskItem({taskItem, index}) {
                                 ...task,
                                 'expiry_date': date.toISOString()
                             }) : null}
-                            id="date-picker-inline"
+                            id={"date-picker-inline" + index}
                             label="deadline"
                             KeyboardButtonProps={{
                                 'aria-label': 'change date',
                             }}
-                            style={{'display': is_editTask(edit == task.id)}}
-
-
+                            style={{'display': is_editTask(edit === task.id)}}
                         />
                     </MuiPickersUtilsProvider>
                     <IconButton className={classes.menuButton} color="inherit" aria-label="menu"
-                                style={{'display': is_editTask(!(edit == task.id))}}
+                                style={{'display': is_editTask(!(edit === task.id))}}
                                 edge="end" onClick={handleClickEdit}>
                         <EditIcon/>
                     </IconButton>
                     <IconButton className={classes.menuButton} color="inherit" aria-label="menu"
-                                style={{'display': is_editTask(edit == task.id)}}
+                                style={{'display': is_editTask(edit === task.id)}}
                                 edge="end" onClick={() => handleClickConfirm('click')}
                                 disabled={task.text.trim().length === 0}>
                         <CheckIcon/>

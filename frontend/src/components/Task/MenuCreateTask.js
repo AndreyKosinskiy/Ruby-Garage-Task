@@ -2,8 +2,6 @@ import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
 import {grey} from '@material-ui/core/colors';
 import TextField from "@material-ui/core/TextField";
 import IconButton from "@material-ui/core/IconButton";
@@ -33,7 +31,7 @@ export default function Menu({id_proj}) {
 
     const handleClickConfirm = event => {
 
-        if (event.key == 'Enter' || event == 'click') {
+        if (event.key === 'Enter' || event === 'click') {
 
             let deadlinedefault = new Date()
             deadlinedefault.setDate(deadlinedefault.getDate() + 3)
@@ -44,13 +42,13 @@ export default function Menu({id_proj}) {
                 "expiry_date": deadlinedefault.toISOString(),
                 "project_id": id_proj
             }
-            let request = axios.post('http://127.0.0.1:8000/api/v1/task/', newTask)
+            axios.post('http://127.0.0.1:8000/api/v1/task/', newTask)
                 .then((response) => response.data)
                 .then(data => {
 
 
                     const newState = stateProjectList.map(project => {
-                        if (project.id == id_proj) {
+                        if (project.id === id_proj) {
                             if (project.tasks) {
                                 project.tasks.push(data);
                             } else {

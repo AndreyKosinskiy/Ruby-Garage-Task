@@ -2,12 +2,10 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Menu from './components/Menu';
 import ProjectLayout from './components/Project/ProjectLayout'
 import {DragDropContext} from 'react-beautiful-dnd';
-import data from "./data.json";
 import axios from 'axios';
 
 function reducer(state, action) {
@@ -37,8 +35,8 @@ const reorder = (list, startIndex, endIndex) => {
     if (startIndex > endIndex) {
         result = result.map(task => {
             if (task.priority >= endIndex && task.priority <= startIndex) {
-                task.priority = task.priority == startIndex ? endIndex : task.priority + 1
-                let request = axios.patch(`http://127.0.0.1:8000/api/v1/task/${task.id}/`, task)
+                task.priority = task.priority === startIndex ? endIndex : task.priority + 1
+                axios.patch(`http://127.0.0.1:8000/api/v1/task/${task.id}/`, task)
                     .then(response => response.data)
                     .then(data => {
                         return data
@@ -51,8 +49,8 @@ const reorder = (list, startIndex, endIndex) => {
     if (startIndex < endIndex) {
         result = result.map(task => {
             if (task.priority >= startIndex && task.priority <= endIndex) {
-                task.priority = task.priority == startIndex ? task.priority = endIndex : task.priority - 1
-                let request = axios.patch(`http://127.0.0.1:8000/api/v1/task/${task.id}/`, task)
+                task.priority = task.priority === startIndex ? task.priority = endIndex : task.priority - 1
+                axios.patch(`http://127.0.0.1:8000/api/v1/task/${task.id}/`, task)
                     .then(response => response.data)
                     .then(data => {
                         return data
@@ -68,10 +66,9 @@ const reorder = (list, startIndex, endIndex) => {
 
 
 function App() {
-
-
     const [stateProjectList, dispatchProjectList] = React.useReducer(reducer, []);
     const [edit, setEdit] = React.useState('');
+
     React.useEffect(() => {
         const fetchData = async () => {
             const result = await axios('http://127.0.0.1:8000/api/v1/project/');
@@ -88,7 +85,7 @@ function App() {
 
         //get project
         let project_id = result.destination.droppableId
-        let taskList = stateProjectList.filter(x => x.id == project_id)[0].tasks
+        let taskList = stateProjectList.filter(x => x.id === project_id)[0].tasks
 
         const reorderedTaskList = reorder(
             taskList,
@@ -98,11 +95,12 @@ function App() {
 
 
         let newState = stateProjectList.map(project => {
-            if (project.id == project_id) project.tasks = reorderedTaskList
+            if (project.id === project_id) project.tasks = reorderedTaskList
             return project
         })
         dispatchProjectList({type: 'update_project_by_id', payload: {'value': newState}})
     }
+
     return (
         <>
             {stateProjectList &&

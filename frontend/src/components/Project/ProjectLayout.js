@@ -26,17 +26,17 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ProjectLayout() {
     const classes = useStyles();
-    const [stateProjectList, dispatchProjectList] = React.useContext(ProjectContext);
+    const [stateProjectList] = React.useContext(ProjectContext);
     return (
         <div className={classes.root}>
-            {stateProjectList.map(stateProjectItem => {
+            {stateProjectList.map((stateProjectItem,index) => {
                 return (
                     <Grid container spacing={3} key={stateProjectItem.id}>
                         <Grid xs={12} direction="column" ustify="center" alignItems="center" container item>
                             <Paper className={classes.paper}>
                                 <ProjectMenu name={stateProjectItem.name} id={stateProjectItem.id}></ProjectMenu>
                                 <MenuCreateTask id_proj={stateProjectItem.id}></MenuCreateTask>
-                                <TaskList tasks={stateProjectItem.tasks} id={stateProjectItem.id}></TaskList>
+                                <TaskList tasks={stateProjectItem.tasks} id={stateProjectItem.id} index={index}></TaskList>
                             </Paper>
                         </Grid>
                     </Grid>

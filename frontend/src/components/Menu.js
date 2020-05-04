@@ -30,7 +30,7 @@ export default function Menu() {
             "name": "New Project",
         }
         let newState = [];
-        let request = axios.post('http://127.0.0.1:8000/api/v1/project/', newProject)
+        axios.post('http://127.0.0.1:8000/api/v1/project/', newProject)
             .then((response) => response.data)
             .then(data => {
                 newState = [...stateProjectList, data]

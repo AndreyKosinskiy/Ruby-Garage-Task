@@ -2,7 +2,7 @@ import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import TaskItem from './TaskItem'
-import {Droppable, Draggable} from "react-beautiful-dnd";
+import {Droppable} from "react-beautiful-dnd";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function TaskList({tasks, id}) {
+export default function TaskList({tasks, id,index}) {
     const classes = useStyles();
     return (
 
@@ -21,8 +21,8 @@ export default function TaskList({tasks, id}) {
                 <>
                     {tasks &&
                     <List innerRef={provided.innerRef} {...provided.droppableProps} className={classes.root}>
-                        {tasks.map((task) =>
-                            <TaskItem key={task.id} index={task.priority} taskItem={task}></TaskItem>
+                        {tasks.map((task,indexTask) =>
+                            <TaskItem key={task.id} position={task.id} index={task.priority} taskItem={task} id_project={id} index={index} indexTask={indexTask}></TaskItem>
                         )}
                         {provided.placeholder}
                     </List>
