@@ -33,7 +33,7 @@ VALUES ('A','Done',1),('Nigma','Done',4),('C','Done',5),('D','Done',1),('I','In 
 	   
 	   ('A','completed',6),('Nigma','completed',6),('N','completed',6),('Nigma','completed',6),('Nigma','completed',6),
 		('A','completed',6),('Nigma','completed',6),('N','completed',6),('Nigma','completed',6),('Nigma','completed',6),
-		('A','completed',6),('Nigma','completed',6),('N','completed',6),('Nigma','completed',6),('Nigma','completed',6);
+		('A','completed',6),('Nigma','completed',6),('N','completed',NULL),('Nigma','completed',6),('Nigma','completed',NULL);
 
 SELECT * from task;
 SELECT * from project;
@@ -63,13 +63,14 @@ FROM task
 -- 5)get the list of all projects containing the 'a' letter in the middle of the name, 
 -- and show the tasks count near each project. Mention that there can exist projects 
 -- without tasks and tasks with project_id = NULL.
-SELECT project.name,COUNT(task.project_id) 
-from project 
-left Join task on task.project_id = project.id
-Where LENGTH(project.name)%2 <> 0 and SUBSTRING(project.name, CEIL((LENGTH(project.name)/2)), 1) LIKE 'a%'
+
+SELECT project.name,COUNT(task.id)
+from task Right Join project on task.project_id = project.id
+Where project.name LIKE '%a%'
 Group By project.name;
 
 -- 6) get the list of tasks with duplicate names. Order alphabetically
+
 SELECT task.name 
 FROM task
 Group by task.name 
@@ -79,12 +80,20 @@ Order BY task.name;
 -- 7)get list of tasks having several exact matches of both name and status, from the 
 -- project 'Garage'. Order by matches count
 
-select task.name, task.status,task.project_id
-from task 
-where task.project_id = garageId;
+Select task.name, task.status, COUNT(*) num_match
+from task
+where task.project_id in (
+	SELECT id 
+	from project 
+	where project.name = 'Garage'
+)
+Group by task.name, task.status
+HAVING COUNT(*) > 1
+Order by num_match DESC ;
 
 
 -- 8) get the list of project names having more than 10 tasks in status 'completed'. Order by project_id
+
 SELECT project.id , project.name  ,task.project_id 
 FROM    project  
         LEFT JOIN task 
