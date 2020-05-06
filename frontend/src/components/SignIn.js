@@ -58,26 +58,26 @@ const SignIn = props => {
 
     const onSubminHandler = (e) => {
         e.preventDefault();
-        const config = {
-            'Content-Type': 'application/json'
-        }
+
+        axios.defaults.headers.common['Content-Type'] = 'application/json';
+
         const data = {
             'username': email,
             'password': password
         }
-        axios.post('http://localhost:8000/token-auth/', data, config)
+        axios.post('http://localhost:8000/token-auth/', data)
             .then(res => res.data)
             .then(json => {
                 localStorage.setItem('token', json.token);
                 setUser({
                     'username': json.user.username,
                     'is_login': true
-                }).catch(e => {
+                })
+                props.history.push("/")
+            }).catch(e => {
+                    console.log("1111")
             setShowError(true)
         });
-
-                props.history.push("/")
-            });
 
     }
 
