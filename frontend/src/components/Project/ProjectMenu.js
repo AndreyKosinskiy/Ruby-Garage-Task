@@ -45,7 +45,8 @@ export default function ProjectMenu({name, id}) {
     const handleClickConfirm = event => {
         if (event.key === 'Enter' || event === 'click') {
             setEditProjectName(!editProjectName);
-
+            axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('token')}`;
+        axios.defaults.headers.common['Content-Type'] = 'application/json';
             axios.patch(`http://127.0.0.1:8000/api/v1/project/${id}/`, {"name": projectName})
                 .then(response => response.data)
                 .then(data => {
@@ -59,6 +60,8 @@ export default function ProjectMenu({name, id}) {
     }
 
     const handleClickRemove = () => {
+        axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('token')}`;
+        axios.defaults.headers.common['Content-Type'] = 'application/json';
         axios.delete(`http://127.0.0.1:8000/api/v1/project/${id}/`)
             .then(response => response.data)
             .then(data => {
@@ -80,7 +83,7 @@ export default function ProjectMenu({name, id}) {
                     </Typography>
                     <TextField
                         className={classes.title}
-                        id="outlined-basic-6" variant="outlined"
+                        id={`outlined-basic-${id}`} variant="outlined"
                         style={{'display': is_editProjectName(editProjectName)}}
                         value={projectName}
                         error={projectName.length === 0 ? true : false}

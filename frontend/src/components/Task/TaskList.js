@@ -16,13 +16,13 @@ export default function TaskList({tasks, id,index}) {
     const classes = useStyles();
     return (
 
-        <Droppable droppableId={id + ''} id={id}>
+        <Droppable droppableId={id + ''}>
             {(provided) => (
                 <>
                     {tasks &&
                     <List innerRef={provided.innerRef} {...provided.droppableProps} className={classes.root}>
-                        {tasks.map((task,indexTask) =>
-                            <TaskItem key={task.id} position={task.id} index={task.priority} taskItem={task} id_project={id} index={index} indexTask={indexTask}></TaskItem>
+                        {tasks.map((task) =>
+                            <TaskItem key={task.id} index={task.priority} taskItem={task}></TaskItem>
                         )}
                         {provided.placeholder}
                     </List>

@@ -34,12 +34,11 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function TaskItem({taskItem, index,id_project,position,indexTask}) {
+export default function TaskItem({taskItem, index}) {
 
 
     const [task, setTask] = React.useState(taskItem);
     const [stateProjectList, dispatchProjectList, edit, setEdit] = React.useContext(ProjectContext);
-    // const [editTask, setEditTask] = React.useState(false);
     const [prevText, setPrevText] = React.useState('');
     const [prevDate, setPrevDate] = React.useState('');
 
@@ -55,8 +54,6 @@ export default function TaskItem({taskItem, index,id_project,position,indexTask}
     }
 
     function handleClickEdit(e) {
-        console.log(stateProjectList)
-        const id = task.id
         setEdit(task.id)
         setPrevDate(task.expiry_date)
         setPrevText(task.text)
@@ -67,6 +64,8 @@ export default function TaskItem({taskItem, index,id_project,position,indexTask}
             setEdit('')
             if (task.text.trim().length !== 0) {
                 if (prevText !== task.text || prevDate !== task.expiry_date) {
+                    axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('token')}`;
+        axios.defaults.headers.common['Content-Type'] = 'application/json';
                     axios.patch(`http://127.0.0.1:8000/api/v1/task/${task.id}/`, task)
                         .then(response => response.data)
                         .then(data => {
@@ -91,6 +90,8 @@ export default function TaskItem({taskItem, index,id_project,position,indexTask}
     }
 
     const handleClickRemove = () => {
+        axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('token')}`;
+        axios.defaults.headers.common['Content-Type'] = 'application/json';
         axios.delete(`http://127.0.0.1:8000/api/v1/task/${task.id}/`)
             .then(response => response.data)
             .then(data => {
@@ -107,6 +108,8 @@ export default function TaskItem({taskItem, index,id_project,position,indexTask}
     }
 
     const handleToggle = (event) => {
+        axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('token')}`;
+        axios.defaults.headers.common['Content-Type'] = 'application/json';
         axios.patch(`http://127.0.0.1:8000/api/v1/task/${task.id}/`, {"is_done": event.target.checked})
             .then(response => response.data)
             .then(data => {
@@ -124,7 +127,7 @@ export default function TaskItem({taskItem, index,id_project,position,indexTask}
     return (
         <Draggable draggableId={task.id + ''} key={task.id} index={index}>
             {(provided) => (
-                <ListItem key={task.id} role={undefined} dense
+                <ListItem key={task.position} role={undefined} dense
                           button {...provided.draggableProps} {...provided.dragHandleProps} innerRef={provided.innerRef}
                 >
                     <ListItemIcon>
@@ -147,7 +150,7 @@ export default function TaskItem({taskItem, index,id_project,position,indexTask}
                                   style={{'display': is_editTask(!(edit === task.id))}} align='right'/>
                     <TextField
                         className={classes.title}
-                        id="outlined-basic-1" variant="outlined"
+                        id={`outlined-basic-${task.id}`} variant="outlined"
                         style={{'display': is_editTask(edit === task.id)}}
                         value={task.text}
                         error={task.text.length === 0 ? true : false}
@@ -166,7 +169,7 @@ export default function TaskItem({taskItem, index,id_project,position,indexTask}
                                 ...task,
                                 'expiry_date': date.toISOString()
                             }) : null}
-                            id={"date-picker-inline" + index}
+                            id={`date-picker-inline-${task.id}`}
                             label="deadline"
                             KeyboardButtonProps={{
                                 'aria-label': 'change date',
