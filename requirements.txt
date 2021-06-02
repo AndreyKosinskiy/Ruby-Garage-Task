@@ -47,5 +47,5 @@ simplejson==3.13.2
 six==1.11.0
 sqlparse==0.3.1
 testresources==2.0.1
-urllib3==1.22
+urllib3==1.26.5
 wadllib==1.3.4
